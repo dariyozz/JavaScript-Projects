@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Online Shop</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        h1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .container {
+            margin-left: 40px;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            width: 50%;
+            padding-block: 5px;
+        }
+
+        input, select {
+            width: 20rem;
+        }
+
+        select {
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="data">
+        <form>
+            <h1>Online shop</h1>
+            <label for="name">Name and username
+                <input type="text" id="name">
+            </label>
+            <label for="item">Item
+                <input type="text" id="item">
+            </label>
+            <label for="code">Item code
+                <input type="text" id="code">
+            </label>
+            <label for="desc">Item description
+                <input type="text" id="desc">
+            </label>
+            <label for="price">Price
+                <input type="text" id="price">
+            </label>
+            <label for="role">Used
+                <select id="role">
+                    <option value="used" selected>used</option>
+                    <option value="unused">unused</option>
+                </select>
+            </label>
+            <button id="add" style="margin-top: 20px;padding: 8px 20px">Add</button>
+            <p>Active items: <span id="active"></span></p>
+        </form>
+    </div>
+    <div id="tab" style="display: flex; gap: 50px">
+        <div>
+            <h3>Unused items</h3>
+            <table id="unusedTab">
+                <tr>
+                    <th>Name</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Code</th>
+                    <th>Number</th>
+                    <th>Action</th>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <h3>Used items</h3>
+            <table id="usedTab">
+                <tr>
+                    <th>Name</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Code</th>
+                    <th>Number</th>
+                    <th>Action</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let oglasi = [];
+    let cnt = 0;
+    let active = document.getElementById("active");
+    function checkEmpty() {
+        let inputs = document.querySelectorAll('input');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    function checkCode(codeVal) {
+        for (let i = 0; i < oglasi.length; i++) {
+            if (codeVal === oglasi[i]) return 0;
+        }
+        return 1;
+    }
+
+    function checkPrice(priceVal) {
+        return priceVal > 0;
+    }
+
+    function n(codeVal) {
+        let n = "";
+        for (let i = 0; i < codeVal.length; i++) {
+            if ((codeVal[i] >= '0' && codeVal[i] <= '9') || codeVal[i] === '!') {
+                continue;
+            }
+            n += codeVal[i];
+        }
+        return n;
+    }
+
+    function add(e) {
+        e.preventDefault();
+        let name = document.getElementById("name");
+        let price = document.getElementById("price");
+        let item = document.getElementById("item");
+        let code = document.getElementById("code");
+        let used = document.getElementById("role");
+        let unTab = document.getElementById("unusedTab");
+        let uTab = document.getElementById("usedTab");
+        if (!checkEmpty()) {
+            alert("All fields are required !");
+            return;
+        }
+        if (!checkCode(code.value)) {
+            alert("That code already exits, pick diffrent one !");
+            return;
+        } else {
+            oglasi.push(code.value)
+        }
+        let newPrice;
+        if (!checkPrice(price.value)) {
+            alert("Price should be greater that 0 !");
+            return;
+        } else {
+            newPrice = parseInt((price.value * 1.1));
+        }
+        let num = n(code.value);
+        if (used.value === "used") {
+            uTab.innerHTML += `<tr><td>${name.value}</td><td>${item.value}</td><td>${newPrice}
+                               </td><td>${code.value}</td><td>${num}
+                               </td><td><button class="sold">Sold</button></td></tr>`
+        } else if (used.value === "unused") {
+            unTab.innerHTML += `<tr><td>${name.value}</td><td>${item.value}</td><td>${newPrice}</td>
+                               </td><td>${code.value}</td><td>${num}
+                               </td><td><button class="sold">Sold</button></td></tr>`
+        }
+        active.innerHTML = ++cnt;
+    }
+
+    function action(e) {
+        let a = e.target;
+        if (a.classList.contains('sold')) {
+            a.closest('tr').style.background = "yellow";
+            a.remove();
+            active.innerHTML = --cnt;
+        }
+    }
+
+    let tab = document.getElementById("tab");
+    tab.addEventListener("click", action);
+    let btn = document.getElementById("add");
+    btn.addEventListener("click", add);
+</script>
+</body>
+</html>

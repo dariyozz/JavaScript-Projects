@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo Game</title>
+    <style>
+        .card {
+            border: 2px solid #000;
+            margin: 10px;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        .blue {
+            background-color: #add8e6;
+        }
+
+        .yellow {
+            background-color: #ffff99;
+        }
+
+        .green {
+            background-color: #90ee90;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid black;
+            display: inline-block;
+            margin-right: 5px;
+            text-align: center;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h2>Create Bingo Card</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" required>
+
+    <label for="surname">Surname:</label>
+    <input type="text" id="surname" required>
+
+    <label for="numbers">Numbers (comma-separated):</label>
+    <input type="text" id="numbers" required>
+
+    <button onclick="addCard()">Add Card</button>
+</div>
+
+<div>
+    <h2>Generate Numbers</h2>
+    <button onclick="generateNumbers()">Generate Numbers</button>
+    <div id="generatedNumbersContainer"></div>
+</div>
+
+<div id="cardsContainer">
+    <!-- Cards will be added here dynamically -->
+</div>
+
+<script>
+    let cards = [];
+
+    function addCard() {
+        const name = document.getElementById("name").value;
+        const surname = document.getElementById("surname").value;
+        const numbers = document.getElementById("numbers").value.split(',').map(num => parseInt(num.trim()));
+
+        if (!name || !surname || numbers.length !== 7) {
+            alert("Please fill in all fields and provide exactly 7 numbers.");
+            return;
+        }
+        let getPaidBtn = false;
+        const card = {name, surname, numbers, correctGuesses: 0, getPaidBtn};
+        cards.push(card);
+
+        displayCards();
+    }
+
+    function getRandomColor() {
+        const colors = ['blue', 'yellow', 'green'];
+        const randomIndex = Math.floor(Math.random() * colors.length);
+        return colors[randomIndex];
+    }
+
+    function displayGeneratedNumbers(numbers) {
+        const generatedNumbersContainer = document.getElementById("generatedNumbersContainer");
+        generatedNumbersContainer.innerHTML = "";
+
+        numbers.forEach(number => {
+            let color = getRandomColor();
+            const circleElement = document.createElement("div");
+            circleElement.classList.add("circle");
+            circleElement.textContent = number;
+            circleElement.style.background = color;
+            generatedNumbersContainer.appendChild(circleElement);
+        });
+    }
+
+    function generateNumbers() {
+        const generatedNumbers = Array.from({length: 7}, () => Math.floor(Math.random() * 32) + 1);
+
+        displayGeneratedNumbers(generatedNumbers);
+        cards.forEach(card => {
+            card.correctGuesses = card.numbers.filter(num => generatedNumbers.includes(num)).length;
+
+        });
+
+        displayCards();
+    }
+
+    function displayCards() {
+        const cardsContainer = document.getElementById("cardsContainer");
+        cardsContainer.innerHTML = "";
+
+        cards.forEach(card => {
+            const cardElement = document.createElement("div");
+            cardElement.classList.add("card");
+
+            if (card.correctGuesses <= 3) {
+                cardElement.classList.add("blue");
+            } else if (card.correctGuesses === 4) {
+                cardElement.classList.add("yellow");
+            } else {
+                cardElement.classList.add("green");
+            }
+
+            cardElement.innerHTML = `
+                <p><strong>Name:</strong> ${card.name}</p>
+                <p><strong>Surname:</strong> ${card.surname}</p>
+               <p><strong>Numbers:</strong> ${card.numbers.map(number => `<span class="circle">${number}</span>`).join('')}</p>
+                <p><strong>Correct Guesses:</strong> ${card.correctGuesses}</p>
+            `;
+
+            cardsContainer.appendChild(cardElement);
+        });
+    }
+</script>
+
+</body>
+</html>

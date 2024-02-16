@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CarRegistration</title>
+</head>
+<style>
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 50px;
+    }
+
+    .data {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        width: 50%;
+        display: flex;
+        padding-block: 5px;
+        justify-content: space-between;
+    }
+
+    input, select {
+        width: 20rem;
+    }
+
+    option {
+        text-align: center;
+    }
+
+    td {
+        border: 1px solid black;
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="top">
+        <h1 class="classes">Car Registration</h1>
+        <div class="data">
+            <label for="name">Name: <input type="text" id="name"></label>
+            <label for="surname">Surname: <input type="text" id="surname"></label>
+            <label for="tablicka">Registration plate: <input type="text" id="tablicka"></label>
+            <label for="age">Age of the car: <input type="text" id="age"></label>
+            <label for="role">Traffic accidents
+                <select name="role" id="role">
+                    <option value="yes" selected>Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </label>
+            <div style="margin-top: 20px; margin-left: 10px">
+                <button id="add" style="padding: 10px 15px">Generate card</button>
+                <p>Total cards: <span id="total"></span></p>
+            </div>
+        </div>
+        <div class="tab">
+            <h3>Cars details</h3>
+            <div class="podatoci">
+                <table id="table">
+                    <tr id="Thead">
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Registration plate</th>
+                    <th>Age of car</th>
+                    <th>Traffic accidents</th>
+                    <th>Total money to pay</th>
+                    <th>Action</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let btn = document.getElementById("add");
+    let table = document.getElementById("table");
+    let cnt = 0;
+    let all = document.getElementById("total");
+    function checkEmpty() {
+        let inputs = document.querySelectorAll('input');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") return 0;
+        }
+        return 1;
+    }
+
+    function isLetter(char) {
+        return (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z');
+    }
+
+    function checkPlate(rplate) {
+        if (rplate.length !== 10) return 0;
+        let br = rplate.slice(3, 7);
+        if (!(isLetter(rplate[0]) && isLetter(rplate[1]) && rplate[2] === '-' && !isNaN(br) && rplate[7] === '-' && isLetter(rplate[8]) && isLetter(rplate[9]))) {
+            return 0;
+        }
+        return 1;
+    }
+
+    function checkOtherExpenses(rplate, accident) {
+        let sum = 0;
+        let a = accident.options.selectedIndex;
+        let s = accident.options[a];
+        if (s.value === "yes") {
+            sum += 500;
+        }
+        let br = rplate.slice(3, 7).split("");
+        let t = br[0];
+        for (let i = 1; i < br.length; i++) {
+            if (br[i] !== t) {
+                return sum;
+            }
+        }
+        sum += 1000;
+        return sum;
+    }
+
+    function generate() {
+        let name = document.getElementById("name");
+        let surname = document.getElementById("surname");
+        let rPlate = document.getElementById("tablicka");
+        let age = document.getElementById("age");
+        let accident = document.getElementById("role");
+        if (!checkEmpty()) {
+            alert("All fields are required !!!");
+            return;
+        }
+        if (!checkPlate(rPlate.value)) {
+            alert("Nepravilna tablicka");
+            return;
+        }
+        let totalToPay = 3000 + checkOtherExpenses(rPlate.value, accident);
+        if (parseInt(age.value) > 30) {
+            table.innerHTML += `
+        <tr style="background: red"><td>${name.value}</td><td>${surname.value}</td><td>${rPlate.value}</td><td>${age.value}</td><td>${accident.value}</td><td>${totalToPay}</td><td><button class="pay">Plati</button><button class="del">Izbrishi</button></td></tr>
+        `
+        } else {
+            table.innerHTML += `
+        <tr style="background: lightgreen"><td>${name.value}</td><td>${surname.value}</td><td>${rPlate.value}</td><td>${age.value}</td><td>${accident.value}</td><td>${totalToPay}</td><td><button class="pay">Plati</button><button class="del">Izbrishi</button></td></tr>
+        `
+        }
+        all.innerHTML = ++cnt;
+    }
+
+    function action(e) {
+        let a = e.target;
+        if (a.classList.contains("pay")) {
+            a.parentElement.childNodes.forEach(btn => btn.disabled = true);
+        }else if(a.classList.contains("del")){
+            a.closest("tr").remove();
+            all.innerHTML = --cnt;
+        }
+    }
+    table.addEventListener('click', action);
+    btn.addEventListener('click', generate);
+
+
+</script>
+</body>
+</html>

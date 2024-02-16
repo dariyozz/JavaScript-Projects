@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <title>Multiply div</title>
+</head>
+<body>
+<div id="container">
+
+</div>
+<script>
+    data = '[{"size":50,"color":"red"},{"size":40,"color":"green"},{"size":20,"color":"blue"},{"size":35,"color":"yellow"},{"size":25,"color":"orange"}]';
+    pData = JSON.parse(data);
+    let container = document.getElementById('container');
+    console.log(pData)
+    pData.forEach((el) => {
+        let d = document.createElement('div');
+        d.style.width = el.size + 'px';
+        d.style.height = el.size + 'px';
+        d.style.backgroundColor = el.color;
+        d.style.position = 'absolute';
+        d.style.left = Math.floor(Math.random() * window.innerWidth) + 'px';
+        d.style.top = Math.floor(Math.random() * window.innerHeight) + 'px';
+        d.addEventListener('click', duplicateDiv);
+        container.append(d);
+    })
+
+    function duplicateDiv(e) {
+        // let direction = [{x: this.offsetWidth, y: this.offsetHeight},
+        //                 {x: -this.offsetWidth, y: this.offsetHeight},
+        //                 {x: this.offsetWidth, y: -this.offsetHeight},
+        //                 {x: -this.offsetWidth, y: -this.offsetHeight}];
+        console.log(parseInt(e.target.style.height))
+        let direction = [{x: parseInt(e.target.style.width), y: parseInt(e.target.style.height)},
+            {x: -parseInt(e.target.style.width), y: parseInt(e.target.style.height)},
+            {x: parseInt(e.target.style.width), y: -parseInt(e.target.style.height)},
+            {x: -parseInt(e.target.style.width), y: -parseInt(e.target.style.height)}];
+        for (let i = 0; i < 4; i++) {
+            let s = this.cloneNode(true);
+            anime({
+                targets: s,
+                translateX: direction[i].x,
+                translateY: direction[i].y,
+                duration: 1000,
+                easing: 'linear',
+            });
+            s.addEventListener('click', duplicateDiv);
+            container.append(s);
+        }
+        this.remove();
+    }
+</script>
+</body>
+</html>

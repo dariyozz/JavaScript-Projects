@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <title>Sliding element</title>
+</head>
+<body>
+<div class="container">
+    <div class="buttons">
+        <button id="left"><</button>
+        <button id="right">></button>
+    </div>
+    <div id="element">
+        <div id="changeableDiv"></div>
+    </div>
+</div>
+<script>
+    let changeableDiv = document.getElementById('changeableDiv');
+    let startLeft = 0;
+    let animeStarted = false;
+    let leftBtn = document.getElementById('left');
+    let rightBtn = document.getElementById('right');
+    let data = '[{"backgroundColor":"red","width":"100px","height":"100px"},{"backgroundColor":"green","width":"50px","height":"100px"},{"backgroundColor":"blue","width":"100px","height":"50px"}]';
+    let parsedData = JSON.parse(data);
+    let whoIsNext = 0;
+    window.addEventListener('load', () => {
+        insertElement(changeableDiv, whoIsNext)
+    })
+    // anime({
+    //     targets: '#changeableDiv',
+    //     translateX: window.innerWidth,
+    //     duration: 2200,
+    //     direction: 'alternate',
+    //     easing: 'linear',
+    // })
+    function insertElement(el, i) {
+        el.style.width = parsedData[i].width;
+        el.style.height = parsedData[i].height;
+        el.style.backgroundColor = parsedData[i].backgroundColor;
+        el.style.left = startLeft + "px";
+        el.style.position = 'absolute';
+    }
+
+    rightBtn.addEventListener('click', () => {
+        if (animeStarted) return;
+        let interval = setInterval(() => {
+            changeableDiv.style.left = `${startLeft += 1}px`
+            animeStarted = true;
+            if (startLeft > window.innerWidth) {
+                clearInterval(interval);
+                startLeft = 0;
+                whoIsNext = whoIsNext === parsedData.length - 1 ? 0 : ++whoIsNext;
+                insertElement(changeableDiv, whoIsNext)
+                animeStarted = false;
+            }
+        }, 1)
+    })
+    console.log(parsedData)
+    leftBtn.addEventListener('click', () => {
+        if (animeStarted) return;
+        startLeft = window.innerWidth;
+        whoIsNext = whoIsNext === 0 ? parsedData.length - 1 : --whoIsNext;
+        insertElement(changeableDiv, whoIsNext);
+        let interval = setInterval(() => {
+            changeableDiv.style.left = `${startLeft -= 1}px`
+            animeStarted = true;
+            if (startLeft < 0) {
+                clearInterval(interval);
+                startLeft = 0;
+                insertElement(changeableDiv, --whoIsNext)
+                animeStarted = false;
+            }
+        }, 1)
+    })
+</script>
+</body>
+</html>

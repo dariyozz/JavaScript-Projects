@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Online Classes</title>
+    <style>
+        .classes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            width: 50%;
+            display: flex;
+            padding-block: 5px;
+            justify-content: space-between;
+        }
+
+        input, select {
+            width: 20rem;
+        }
+
+        option {
+            text-align: center;
+        }
+
+        th, tr, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top">
+        <h1 class="classes">Online classes</h1>
+        <div class="data">
+            <label for="name">Name and surname<input type="text" id="name"></label>
+            <label for="email">Email<input type="text" id="email"></label>
+            <label for="age">Age<input type="text" id="age"></label>
+            <label for="username">Username<input type="text" id="username"></label>
+            <label for="password">Password<input type="text" id="password"></label>
+            <label for="role">Role
+                <select name="role" id="role">
+                    <option value="Teacher" selected>Teacher</option>
+                    <option value="Student">Student</option>
+                </select>
+            </label>
+            <div style="margin-top: 20px; margin-left: 10px">
+                <button id="add" style="padding: 10px 15px">Add</button>
+                <p>Available teachers: <span id="avl"></span></p>
+            </div>
+        </div>
+    </div>
+    <div class="tab">
+        <h3>Users</h3>
+        <div class="podatoci">
+            <table id="table">
+                <tr id="Thead">
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let btn = document.getElementById('add');
+    let tab = document.getElementById('table');
+    let cnt = 0;
+    let names = [];
+
+    function checkEmpty() {
+        let inputs = document.querySelectorAll('input');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") return 0
+        }
+        return 1;
+    }
+
+    function checkPass(pass) {
+        if (pass.value.length < 10) return 0;
+        let cntUpp = 0, cntNum = 0;
+        for (let i = 0; i < pass.value.length; i++) {
+            if (pass.value[i] === pass.value[i].toUpperCase()) {
+                cntUpp++;
+            }
+            if (pass.value[i] >= '0' && pass.value[i] <= '9') {
+                cntNum++;
+            }
+        }
+        if (cntUpp === 0 || cntNum === 0) {
+            return 0;
+        }
+        return 1;
+    }
+
+    function checkName(name) {
+        for (let i = 0; i < names.length; i++) {
+            if (names[i] === name.value) return 0;
+        }
+        return 1;
+    }
+    function checkAge(role) {
+        // let a = role.options.selectedIndex;
+        // let sel = role.options[a].value;
+        // return sel === "Teacher";
+        return role.value === "Teacher" ;
+    }
+
+    function fillTable(name, username, email, age, role) {
+        let table = document.getElementById('table');
+        let available = document.getElementById('avl');
+        let a = role.options.selectedIndex;
+        let r = role.options[a].value;
+        if (r === "Teacher") {
+            table.innerHTML += `<tr style="background: lightgreen"><td>${name.value}</td><td>${username.value}</td><td>${email.value}</td><td>${age.value}</td><td>${r}</td><td><button class="act">Hire</button> </td></tr>`;
+            cnt++;
+            available.innerHTML = cnt;
+        } else if (r === "Student") {
+            table.innerHTML += `<tr style="background: cornflowerblue"><td>${name.value}</td><td>${username.value}</td><td>${email.value}</td><td>${age.value}</td><td>${r}</td><td></td></tr>`;
+        }
+    }
+
+    function action(e) {
+        let available = document.getElementById('avl');
+        let a = e.target;
+        if (a.classList.contains("act")) {
+            a.closest('tr').style.background = "grey";
+            // a.closest('button').remove();
+            a.remove();
+            cnt--;
+            available.innerHTML = cnt;
+        }
+    }
+
+    function add() {
+        let name = document.getElementById('name');
+        let email = document.getElementById('email');
+        let age = document.getElementById('age');
+        let username = document.getElementById('username');
+        let pass = document.getElementById('password');
+        let role = document.getElementById('role');
+
+        if (!checkEmpty()) {
+            alert("All fields are required !");
+            return;
+        }
+        if (!checkPass(pass)) {
+            alert("Password should be at least 10 characters long, and it should have at least 1 uppercase letter and 1 number !!!");
+            return;
+        }
+        if (parseInt(age.value) <= 18 && checkAge(role)) {
+            alert("You can't be a teacher!!! You have 18 or less years!! Grow up :)");
+            return;
+        }
+        if (!checkName(name)) {
+            alert("Name already exists !!! Pick different one.")
+            return;
+        } else {
+            names.push(name.value);
+        }
+        fillTable(name, username, email, age, role)
+    }
+
+    btn.addEventListener('click', add);
+    tab.addEventListener('click', action);
+</script>
+</body>
+</html>

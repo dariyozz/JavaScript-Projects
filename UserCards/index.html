@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>UserCards</title>
+</head>
+<style>
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 50px;
+    }
+
+    .data {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        width: 50%;
+        display: flex;
+        padding-block: 5px;
+        position: relative;
+        justify-content: space-between;
+    }
+
+    input, select {
+        width: 20rem;
+    }
+
+    .px:after {
+        content: "px";
+        position: absolute;
+        right: -20px;
+    }
+
+    option {
+        text-align: center;
+    }
+
+</style>
+<body>
+<div class="container">
+    <div class="top">
+        <h1>User Cards</h1>
+        <div class="data">
+            <label for="username">Username<input type="text" id="username"></label>
+            <label for="Id">ID<input type="text" id="Id"></label>
+            <label for="width" class="px">width<input type="text" id="width"></label>
+            <label for="Height" class="px">Height<input type="text" id="height"></label>
+            <label for="role">Color
+                <select name="role" id="role">
+                    <option value="blue" selected>blue</option>
+                    <option value="red">red</option>
+                    <option value="green">green</option>
+                    <option value="yellow">yellow</option>
+                    <option value="black">black</option>
+                    <option value="white">white</option>
+                    <option value="orange">orange</option>
+                </select>
+            </label>
+            <div style="margin-top: 20px; margin-left: 10px">
+                <button id="add" style="padding: 10px 15px">Add</button>
+                <p>Вкупно продадени: <span id="prod"></span></p>
+            </div>
+        </div>
+    </div>
+    <div id="cards" style="display: flex;flex-wrap: wrap;">
+    </div>
+</div>
+<script>
+    let btn = document.getElementById("add");
+    let t = document.getElementById("cards");
+    let cnt = 0;
+    function build() {
+        let username = document.getElementById("username");
+        let id = document.getElementById("Id");
+        let w = document.getElementById("width");
+        let h = document.getElementById("height");
+        let col = document.getElementById("role");
+        let blokovi = document.getElementById("cards");
+        let i = col.options.selectedIndex;
+        let s = col.options[i].value;
+        blokovi.innerHTML += `<div style="width: ${w.value + "px"};height: ${h.value + "px"};background: ${s};display: flex;justify-content: center;flex-direction: column;align-items: center">
+<p>ID: ${id.value}</p>
+<p>Width: ${w.value}</p>
+<p>Height: ${h.value}</p>
+<p>Color: ${col.value}</p>
+<p>Vkupna suma: ${w.value * h.value}</p>
+<p><button class="sell">Sell</button></p>
+</div>`;
+    }
+    function act(e){
+        let a = e.target;
+        let av = document.getElementById('prod');
+        if(a.classList.contains("sell")){
+            cnt++;
+            a.closest("div").remove();
+        }
+        av.innerHTML = cnt;
+    }
+    t.addEventListener('click',act)
+    btn.addEventListener("click", build);
+</script>
+</body>
+</html>

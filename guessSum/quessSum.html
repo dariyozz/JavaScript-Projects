@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Guess sum</title>
+</head>
+<body>
+<div class="container">
+    <div class="numbers">
+
+    </div>
+    <div class="field">
+        <label for="guess"><input type="text" name="guess" id="guess"></label>
+        <button id="check">Check</button>
+        <p>Time left <span id="timeLeft">60</span></p>
+    </div>
+</div>
+<script>
+    let time = 60;
+    let numbers = [];
+    let numberToGuess;
+    window.addEventListener('load', generateNumbers);
+    let input = document.getElementById('guess');
+    let btn = document.getElementById('check');
+
+    let interval = setInterval(() => {
+        time--;
+        document.getElementById('timeLeft').textContent = time;
+        if (time === 0) {
+            clearInterval(interval);
+            document.getElementById('timeLeft').textContent = 'Time is up';
+            btn.disabled = true;
+            input.disabled = true;
+        }
+    }, 1000);
+
+    function generateNumbers() {
+        for (let i = 0; i < 2; i++) {
+            numbers.push(Math.floor(Math.random() * 9) + 1);
+        }
+        for (let i = 0; i < 2; i++) {
+            numbers.push(Math.floor(Math.random() * 90) + 10);
+        }
+        for (let i = 0; i < 2; i++) {
+            numbers.push(Math.floor(Math.random() * 900) + 100);
+        }
+        for (let i = 0; i < numbers.length; i++) {
+            let n = document.createElement('span');
+            if (i === numbers.length - 1) {
+                numberToGuess = numbers[i];
+                n.innerHTML += ' = ';
+            }
+            n.innerHTML += numbers[i] + " ";
+            document.querySelector('.numbers').append(n);
+        }
+    }
+
+    function checkGuess() {
+        let val = input.value;
+        let i = eval(val);
+        console.log(i, numberToGuess);
+        if (i === numberToGuess) {
+            alert('You win');
+            clearInterval(interval);
+            btn.disabled = true;
+            input.disabled = true;
+        }
+    }
+
+    btn.addEventListener('click', checkGuess);
+</script>
+</body>
+</html>

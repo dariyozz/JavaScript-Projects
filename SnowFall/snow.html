@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Snow Fall</title>
+</head>
+<body>
+<img src="s1.png" alt="snowflake">
+<img src="s2.png" alt="snowflake">
+<img src="s3.png" alt="snowflake">
+<img src="s4.png" alt="snowflake">
+<img src="s5.png" alt="snowflake">
+<img src="s6.png" alt="snowflake">
+<script>
+    let images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.style.width = '150px';
+        img.style.height = '150px';
+        img.style.position = 'absolute';
+        img.style.top = '-100px';
+        img.style.left = `${Math.floor(Math.random() * window.innerWidth)}px`;
+        startRandomFall(img);
+    });
+
+    function startRandomFall(img) {
+        let randTime = Math.floor(Math.random() * 50) + 1
+        let a = setInterval(() => {
+            img.style.top = `${parseInt(img.style.top) + 1}px`;
+            if (parseInt(img.style.top) > window.innerHeight) {
+                img.style.top = '-100px';
+                img.style.left = `${Math.floor(Math.random() * window.innerWidth)}px`;
+                clearInterval(a);
+                startRandomFall(img);
+            }
+        }, randTime)
+    }
+</script>
+</body>
+</html>

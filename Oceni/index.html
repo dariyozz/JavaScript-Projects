@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Oceni</title>
+</head>
+<body>
+<div class="container">
+    <h1>Details</h1>
+    <div class="top">
+        <div class="details">
+            <div><label for="name">Name</label>
+                <input type="text" id="name" class="inp"></div>
+            <div><label for="index">Index</label>
+                <input type="text" id="index" class="inp"></div>
+            <div><label for="phone">Phone</label>
+                <input type="text" id="phone" class="inp"></div>
+            <div>
+                <label>Grade
+                    <label for="rad5">5</label>
+                    <input class="check" type="radio" value="5" id="rad5" name="grade" checked>
+                    <label for="rad6">6</label>
+                    <input class="check" type="radio" value="6" id="rad6" name="grade">
+                    <label for="rad7">7</label>
+                    <input class="check" type="radio" value="7" id="rad7" name="grade">
+                    <label for="rad8">8</label>
+                    <input class="check" type="radio" value="8" id="rad8" name="grade">
+                    <label for="rad9">9</label>
+                    <input class="check" type="radio" value="9" id="rad9" name="grade">
+                    <label for="rad10">10</label>
+                    <input class="check" type="radio" value="10" id="rad10" name="grade">
+                </label>
+            </div>
+            <div><label for="month">Session</label>
+                <select id="month">
+                    <option selected>January</option>
+                    <option>June</option>
+                    <option>September</option>
+                </select>
+            </div>
+            <div>
+                <button id="import">Import student</button>
+            </div>
+        </div>
+        <div id="revert">
+            <h1>Revert history</h1>
+            <ul id="list"></ul>
+        </div>
+    </div>
+    <div class="table">
+        <h1>Students (average <span id="avrg"> </span>)</h1>
+        <table id="tab">
+            <tr id="Thead">
+                <td>Name</td>
+                <td>Index</td>
+                <td>Phone</td>
+                <td>Grade</td>
+                <td>Session</td>
+                <td>Action</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+<script>
+    let name = document.getElementById("name");
+    let index = document.getElementById("index");
+    let phone = document.getElementById("phone");
+    let session = document.getElementById("month");
+    let ta = document.getElementById("tab");
+    let avg = document.getElementById("avrg");
+    let grades = [];
+    const grade = () => {
+        let grades = document.querySelectorAll('input[name="grade"]');
+        for (let i = 0; i < grades.length; i++) {
+            if (grades[i].checked) {
+                return grades[i].value;
+            }
+        }
+    }
+    let btn = document.getElementById("import");
+    btn.addEventListener('click', add);
+
+    function add() {
+        if (!checkEmptyFields()) {
+            alert("All fields are required!");
+            return;
+        }
+        if (!checkPhoneNumber()) {
+            alert("Invalid phone format! Phone format: AAA/BBB-CCC");
+            return;
+        }
+        fillTable();
+    }
+
+    function checkEmptyFields() {
+        let inputs = document.querySelectorAll('input[class="inp"]');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    function checkPhoneNumber() {
+        let number = document.getElementById("phone").value;
+        if (number.length > 11) return 0;
+        if (number[3] === "/" && number[7] === "-") return 1;
+        return 0;
+    }
+
+
+    function fillTable() {
+        let table = document.getElementById("tab");
+        table.innerHTML += `<tr>
+                            <td>${name.value}</td>
+                            <td>${index.value}</td>
+                            <td>${phone.value}</td>
+                            <td>${grade()}</td>
+                            <td>${session.value}</td>
+                            <td><button class="conf">Confirm</button><button class="rem">Revert</button></td>
+</tr>`
+        grades.push(parseInt(grade()));
+        // name.value="";  index.value="";  phone.value="";
+    }
+
+    function action(e) {
+        let revHistory = document.getElementById("revert");
+        let a = e.target;
+        if (a.classList.contains('rem')) {
+            revHistory.innerHTML += `<ul>
+<li>${index.value} -  grade ${grade()}</li>
+</ul>`
+            a.closest("tr").remove();
+            return;
+        }
+        let s=0; let bb=0;
+        if (a.classList.contains('conf')) {
+            a.closest("tr").style.background = "lightgreen"
+            // a.closest("button").disabled = true;
+            a.parentElement.childNodes.forEach(btn => btn.disabled = true);
+            s = average(s);
+            bb = avg.innerHTML = s/grades.length;
+            avg.innerHTML = bb;
+            console.log(s);
+            console.log(bb)
+        }
+    }
+    function average(s){
+        for (let i = 0; i < grades.length; i++) {
+            s += parseInt(grades[i]);
+        }
+        return s;
+    }
+    ta.addEventListener('click', action);
+    avg.addEventListener('contextmenu',average);
+</script>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: auto;
+        width: 80%;
+    }
+
+    .top {
+        display: flex;
+        width: 70%;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    th, tr, td {
+        border: 1px solid black;
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+</style>
+</html>

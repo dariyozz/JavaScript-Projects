@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IPKS1Kol</title>
+    <script>
+        function checkLenght(num){
+            if(num.length !== 10 ){
+                alert("Vnesi 10 cifren broj ");
+                return 0;
+            }
+            return 1;
+        }
+        function levo(){
+            let broj = document.getElementById('broj');
+            let num = document.getElementById('broj').value;
+            if(checkLenght(num)) {
+            for (let i in num) {
+                if (num.charAt(i) < '0' || num.charAt(i) > '9') {
+                    alert("SAMO BROJKI");
+                    return;
+                }
+            }
+                let firstDigits = num.slice(0, 2);
+                let remaining = num.slice(2);
+                broj.value = remaining + firstDigits;
+            }
+        }
+        function desno(){
+            let broj = document.getElementById('broj');
+            let num = document.getElementById('broj').value;
+            if(checkLenght(num)) {
+            for (let i in num) {
+                if (num.charAt(i) < '0' || num.charAt(i) > '9') {
+                    alert("SAMO BROJKI");
+                    return;
+                }
+            }
+                let lastDigits = num.slice(num.length - 2);
+                let remaining = num.slice(0, num.length - 2);
+                broj.value = lastDigits + remaining;
+
+            }
+        }
+
+        function store() {
+            let num = document.getElementById('broj').value;
+            if (checkLenght(num)) {
+                let store = document.getElementById('zacuvani');
+                store.innerHTML += '<ul><li>' + num + '</li></ul>';
+            }
+        }
+        function convert() {
+            let broj = document.getElementById('broj');
+            let num = document.getElementById('broj').value;
+            let getDigit;
+            let del = 1000000000;
+            let newNum=0;
+            for (let i in num){
+                getDigit = parseInt(num.charAt(i));
+                if(getDigit-2<=0){
+                    getDigit = 8;
+                }
+                else{
+                    getDigit-=2;
+                }
+                newNum+=del*getDigit;
+                del/=10;
+            }
+            broj.value=newNum;
+            console.log(newNum);
+        }
+        function check(){
+            let num = document.getElementById('broj').value;
+            let unique = document.getElementById('sovrsen');
+            let cnt = 0;
+            for (let i in num){
+                if(parseInt(num.charAt(i)) % 3 === 0){
+                    cnt++;
+                }
+            }
+            if(cnt>=3){
+             unique.textContent="Sovrsen";
+            }
+            else unique.textContent= "";
+        }
+    </script>
+</head>
+<body>
+<div class="input">
+    <input type="text" name="" id="broj">
+    <div id="sovrsen"></div>
+    <button id="levo" onclick="levo()"> < </button>
+    <button id="desno" onclick="desno()"> > </button>
+    <button id="convert" onclick="convert()">Convert</button>
+    <button id="store" onclick="store()">Store</button>
+    <button id="check " onclick="check()">Check</button>
+    <div id="zacuvani"></div>
+</div>
+</body>
+</html>

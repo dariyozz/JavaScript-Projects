@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="container">
+    <label for="inp"><input id="inp" type="text" oninput="render()"></label>
+    <div id="add">
+
+    </div>
+</div>
+<script>
+
+    const date = ["dario", "dare", "ane", "roza", "zoran"];
+    let iVal = document.getElementById('inp');
+    let input = document.getElementById('inp');
+    let cont = document.getElementById('search-result')
+
+    function render() {
+        document.getElementById('add').innerHTML = '';
+        date.map(d => {
+            if (d.toLowerCase().includes(iVal.value.toLowerCase())) {
+                let p = document.createElement('p');
+                p.classList.add('search-result');
+                p.addEventListener('click', copyResult);
+                p.textContent = d.toString();
+                document.getElementById('add').append(p);
+            }
+        })
+    }
+
+    function copyResult() {
+            iVal.value = this.textContent;
+    }
+
+    cont.addEventListener('click', copyResult)
+</script>
+</body>
+</html>

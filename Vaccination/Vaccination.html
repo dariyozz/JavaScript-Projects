@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vaccination</title>
+    <style>
+        *{
+            font-family: 'Poppins', sans-serif;
+        }
+        body{
+            background: lightblue;
+        }
+        #top {
+            width: 80%;
+            margin: auto;
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            margin-bottom: 70px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        #formData {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            justify-content: center;
+        }
+
+        #formData > div {
+            margin: auto;
+        }
+
+        label{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 5px;
+        }
+        input,select{
+            font-size: 1.2rem;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        #btn {
+            margin-left: auto;
+            padding: 10px 15px;
+            border: 2px solid black;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+        }
+        #btn:hover{
+            background: lightgreen;
+            transform: scale(1.2);
+        }
+        table{
+            border-collapse: collapse;
+        }
+        td{
+            border: 2px solid black;
+            padding: 10px 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="top">
+        <div class="header">
+            <h1>Vaccination.mk</h1>
+            <h3>Website for vaccination</h3>
+        </div>
+        <div id="formData">
+            <div class="left">
+                <label for="name">Name: <input type="text" id="name"></label>
+                <label for="ID">ID number: <input type="text" id="ID"></label>
+                <label for="years">Years: <input type="text" id="years"></label>
+                <label for="city">Location:
+                    <select id="city">
+                        <option value="Skopje">Skopje</option>
+                        <option selected value="Kicevo">Kicevo</option>
+                        <option value="Ohrid">Ohrid</option>
+                        <option value="Bitola">Bitola</option>
+                        <option value="Prilep">Prilep</option>
+                    </select>
+                </label>
+            </div>
+            <div class="right">
+                <label for="surname">Surname: <input type="text" id="surname"></label>
+                <label>Gender:
+                    <input type="radio" class="gender" name="gen" value="male">Male
+                    <input type="radio" class="gender" name="gen" value="female">Female
+                </label>
+                <label for="email">Email: <input type="text" id="email"></label>
+            </div>
+        </div>
+        <button id="btn">Insert</button>
+    </div>
+    <div id="tableData" style="display: flex; justify-content: space-around">
+        <div class="under18">
+            <h2 style="text-align: center">Пријавени малолетни <br>граѓани</h2>
+            <table id="maloletni">
+                <th><td>Name</td><td>Surname</td><td>Address</td><td>Location</td><td>Status</td></th>
+            </table>
+        </div>
+        <div class="above18">
+            <h2 style="text-align: center">Пријавени полнилетни <br>граѓани</h2>
+            <table id="polnoletni">
+                <th><td>Name</td><td>Surname</td><td>Address</td><td>Location</td><td>Status</td></th>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+
+</body>
+</html>

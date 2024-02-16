@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bingo</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    body{
+        background: wheat;
+    }
+    #cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        margin-top: 40px;
+    }
+    
+    label {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-block: 5px;
+    }
+
+    input {
+        width: 20rem;
+        margin-left: 10px;
+        background: beige;
+    }
+    button{
+        padding: 20px;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    .top {
+        display: flex;
+    }
+
+    #luckynum {
+        margin-left: 250px;
+    }
+
+    #add {
+        display: flex;
+        padding: 8px 20px;
+        margin: auto;
+    }
+</style>
+<body>
+<div class="container">
+    <h1 style="display: flex; justify-content: center">National Lottery Game</h1>
+    <div class="top">
+        <div class="data">
+            <h2>Assign Form</h2>
+            <label for="name">Name and Surname<input type="text" id="name"></label>
+            <label for="amount">Total amount<input type="text" id="amount"></label>
+            <label for="code">Code<input type="text" id="code"></label>
+            <label for="combination">Combinations<input type="text" id="combination"></label>
+            <label for="bonus">Bonus
+                <select id="bonus">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </label>
+            <button id="add">Add</button>
+        </div>
+        <div id="luckynum">
+            <h2>Lucky numbers</h2>
+            <br>
+            <p><span id="numb"></span></p>
+            <p>
+                <button id="getWeekly">Get weekly combination</button>
+            </p>
+            <p>Total sum <span id="total"></span></p>
+        </div>
+    </div>
+    <div id="cards">
+
+    </div>
+</div>
+<script>
+    let name = document.getElementById('name');
+    let amount = document.getElementById('amount');
+    let code = document.getElementById('code');
+    let combination = document.getElementById('combination');
+    let luckyNums = document.getElementById('numb');
+    let cardsBottom = document.getElementById('cards');
+    let totalSum = document.getElementById('total');
+    let codes = [];
+    let cards = [];
+    let total = 0;
+
+    function checkZnaci() {
+        for (let i = 0; i < code.value.length; i++) {
+            if (!((code.value[i] >= 'a' && code.value[i] <= 'z') || code.value[i] === '!' || code.value[i] === '%')) {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    function checkSame() {
+        for (let i = 0; i < codes.length; i++) {
+            if (codes[i] === code.value)
+                return 0;
+        }
+        return 1;
+    }
+
+    function add() {
+        const numbers = document.getElementById("combination").value.split(',').map(num => parseInt(num.trim()));
+        let bon = document.getElementById('bonus').value;
+        if (!name.value || !amount.value || !code.value || !combination.value) {
+            alert("All fields are required !");
+            return;
+        }
+        if (!checkZnaci()) {
+            alert("Samo bukvi i znacite ! i %");
+            return;
+        }
+        if (!checkSame()) {
+            alert("Code already exist. Try different one !");
+            return;
+        } else {
+            codes.push(code.value);
+        }
+        let n = name.value;
+        let c = code.value;
+        let getPaidBtn = false;
+        let a = parseInt(amount.value);
+        const infoCard = {n, c, numbers, correctGuesses: 0, getPaidBtn, bon, a};
+        cards.push(infoCard);
+        displayCards();
+    }
+
+    function getRandomColor() {
+        const colors = ['lightblue', 'yellow', 'lightgreen'];
+        const randomIndex = Math.floor(Math.random() * colors.length);
+        return colors[randomIndex];
+    }
+
+    function displayRandNums(nums) {
+        luckyNums.innerHTML = "";
+        nums.forEach(num => {
+            let color = getRandomColor();
+            let circle = document.createElement('span');
+            circle.style.cssText = "padding: 10px 15px; border: 1px solid black; border-radius: 50%;"
+            circle.textContent = num;
+            circle.style.background = color;
+            luckyNums.appendChild(circle);
+        })
+    }
+
+    function generateNumb() {
+        let randNums = new Array(7);
+        for (let i = 0; i < 7; i++) {
+            randNums[i] = Math.floor(Math.random() * 32) + 1;
+        }
+        displayRandNums(randNums);
+
+        cards.forEach(card => {
+            card.correctGuesses = card.numbers.filter(num => randNums.includes(num)).length;
+            card.getPaidBtn = true;
+        })
+
+        displayCards();
+    }
+
+
+    function displayCards() {
+        cardsBottom.innerHTML = "";
+        cards.forEach(card => {
+            let elem = document.createElement('div');
+            elem.style.cssText = "padding: 20px; border:1px solid black;";
+            if (card.correctGuesses <= 3) {
+                elem.style.background = "lightblue";
+            } else if (card.correctGuesses === 4) {
+                elem.style.background = "yellow";
+            } else {
+                elem.style.background = "lightgreen";
+            }
+            elem.innerHTML = `
+                <p><strong>Name:</strong> ${card.name}</p>
+                <p><strong>Surname:</strong> ${card.surname}</p>
+               <p><strong>Numbers:</strong> ${card.numbers.map(number => `<span style="border: 1px solid black; border-radius: 50%;padding: 10px 15px">${number}</span>`).join('')}</p>
+                <p><strong>Correct Guesses:</strong> ${card.correctGuesses}</p>
+                ${card.getPaidBtn ? `<button class="getPaidButton" onclick="getPaid()">Get Paid</button>` : ''}
+            `;
+            cardsBottom.appendChild(elem);
+
+        })
+    }
+
+    function getPaid() {
+        //TODO
+    }
+
+    function action(e) {
+        let a = e.target;
+        if (a.classList.contains("getPaidButton")) {
+            a.closest('div').remove();
+        }
+    }
+
+    let getWeekly = document.getElementById('getWeekly');
+    let btn = document.getElementById('add');
+    btn.addEventListener('click', add);
+    getWeekly.addEventListener('click', generateNumb);
+    cardsBottom.addEventListener('click', action);
+</script>
+</body>
+</html>
